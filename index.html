@@ -1,0 +1,547 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Conectar WhatsApp a HubSpot · Ferremayoreo</title>
+<meta name="description" content="Manual paso a paso para conectar los números de WhatsApp Business de los vendedores a HubSpot por coexistencia.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --orange:#FE8301; --yellow:#FFED02; --pink:#ED8BFA; --black:#000;
+    --gray:#EBEAE8; --soft-orange:#FFD9BA; --soft-yellow:#FFF3B8; --soft-pink:#F4CDF8;
+    --muted:#575555; --bg:#FAF9F7; --card:#FFFFFF; --line:#CFCDCA;
+    --ok:#1E7A45; --ok-bg:#E4F4EA; --bad:#B42318; --bad-bg:#FDE8E6;
+    --radius:14px;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;scroll-padding-top:16px}
+  body{margin:0;background:var(--bg);color:var(--black);font:16px/1.6 Inter,Arial,system-ui,sans-serif}
+  .brandbar{height:6px;background:linear-gradient(90deg,var(--yellow),var(--orange),var(--pink))}
+  .wrap{max-width:820px;margin:0 auto;padding:28px 16px 64px}
+  header.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:28px;flex-wrap:wrap}
+  .logo{display:flex;align-items:center;gap:8px;font-weight:700;letter-spacing:.2px;font-size:14px}
+  .logo i{width:14px;height:14px;border-radius:50%;background:var(--orange);display:inline-block}
+  .client{font-size:13px;color:var(--muted)}
+  .tag{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--orange)}
+  .tag::before{content:"";width:18px;height:2px;background:var(--orange)}
+  h1,h2,h3{font-family:Fraunces,Georgia,serif;font-weight:700;line-height:1.15}
+  h1{font-size:clamp(30px,6.5vw,44px);margin:.3em 0 .35em}
+  h2{font-size:clamp(22px,4.5vw,26px);margin:0}
+  h3{font-size:18px;margin:22px 0 8px}
+  .lead{color:var(--muted);margin:0 0 20px;font-size:17px}
+  a{color:inherit}
+  p{margin:0 0 12px}
+  b,strong{font-weight:700}
+  .card{background:var(--card);border:1px solid var(--black);border-radius:var(--radius);padding:22px}
+  .stack{display:grid;gap:18px;grid-template-columns:minmax(0,1fr)}
+  .stack>*{min-width:0}
+
+  /* Ruta rápida */
+  .route{display:grid;grid-template-columns:repeat(auto-fit,minmax(104px,1fr));gap:10px;margin:8px 0 0}
+  .route a{display:flex;flex-direction:column;gap:2px;text-decoration:none;border:1px solid var(--black);border-radius:12px;padding:12px 12px 10px;background:#fff;transition:transform .12s ease,box-shadow .12s ease}
+  .route a:hover,.route a:focus-visible{transform:translateY(-2px);box-shadow:4px 4px 0 var(--orange);outline:none}
+  .route .n{font-family:Fraunces,Georgia,serif;font-weight:700;font-size:20px;color:var(--orange);line-height:1}
+  .route .t{font-weight:600;font-size:14px;line-height:1.3}
+  .hero-note{margin-top:18px}
+
+  /* Índice */
+  .toc{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:4px 18px;margin:0;padding:0;list-style:none;counter-reset:toc}
+  .toc li{counter-increment:toc}
+  .toc a{display:block;padding:6px 0;text-decoration:none;border-bottom:1px solid var(--gray);font-size:15px}
+  .toc a::before{content:counter(toc,decimal-leading-zero);font-weight:700;color:var(--orange);margin-right:10px;font-size:13px}
+  .toc a:hover{color:var(--orange)}
+
+  /* Secciones */
+  .sec-head{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+  .num{flex:0 0 auto;width:48px;height:48px;border-radius:12px;background:var(--soft-orange);display:grid;place-items:center;font-family:Fraunces,Georgia,serif;font-weight:700;font-size:19px}
+  .intro{color:var(--muted)}
+
+  /* Pasos */
+  ol.steps{list-style:none;padding:0;margin:12px 0 0;display:grid;gap:10px;counter-reset:s}
+  ol.steps>li{counter-increment:s;position:relative;padding:10px 12px 10px 48px;border:1px solid var(--line);border-radius:10px;background:#fff}
+  ol.steps>li::before{content:counter(s);position:absolute;left:12px;top:10px;width:24px;height:24px;border-radius:50%;background:var(--black);color:#fff;font-size:13px;font-weight:700;display:grid;place-items:center}
+  ul.dots{margin:8px 0 12px;padding-left:20px}
+  ul.dots li{margin:4px 0}
+  .ui{font-weight:700;background:var(--soft-yellow);padding:0 5px;border-radius:5px;white-space:nowrap}
+  .path{font-weight:600}
+
+  /* Avisos */
+  .call{border-radius:10px;padding:12px 14px;margin:14px 0;font-size:15px;border-left:5px solid}
+  .call b.k{display:block;margin-bottom:2px;font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+  .call p:last-child,.call ul:last-child{margin-bottom:0}
+  .call.note{background:var(--soft-yellow);border-color:#E3C800}
+  .call.tip{background:var(--ok-bg);border-color:var(--ok)}
+  .call.imp{background:var(--soft-orange);border-color:var(--orange)}
+  .call.warn{background:var(--bad-bg);border-color:var(--bad)}
+
+  /* Lista de requisitos con casillas */
+  .checks{display:grid;gap:8px;margin-top:10px}
+  .check{display:flex;gap:12px;align-items:flex-start;padding:11px 13px;border:1px solid var(--line);border-radius:10px;background:#fff;cursor:pointer}
+  .check:hover{border-color:var(--black)}
+  .check input{margin:3px 0 0;accent-color:var(--orange);flex:0 0 auto;width:18px;height:18px}
+  .check:has(input:checked){border-color:var(--black);background:var(--ok-bg)}
+  .check small{display:block;color:var(--muted);font-size:13px;margin-top:2px}
+  .progress{font-size:14px;color:var(--muted);margin-top:10px}
+
+  /* Personas / reglas / problemas */
+  .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:10px}
+  .tile{border:1px solid var(--line);border-radius:10px;padding:12px 14px;background:#fff}
+  .tile h4{margin:0 0 4px;font-size:15px}
+  .tile p{margin:0;font-size:14px;color:var(--muted)}
+  .tile .pill{display:inline-block;margin-top:8px;font-size:12px;font-weight:700;padding:2px 8px;border-radius:999px;background:var(--gray)}
+  .tile .pill.yes{background:var(--soft-orange)}
+  .tile .pill.no{background:var(--ok-bg)}
+  .flow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:8px;font-size:13px}
+  .flow span{border:1px solid var(--black);border-radius:999px;padding:3px 10px;background:#fff;font-weight:600}
+  .flow i{font-style:normal;color:var(--orange);font-weight:700}
+
+  .prob{display:grid;gap:10px;margin-top:10px}
+  .prob details{border:1px solid var(--line);border-radius:10px;background:#fff}
+  .prob summary{cursor:pointer;padding:12px 14px;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:12px}
+  .prob summary::-webkit-details-marker{display:none}
+  .prob summary::after{content:"+";color:var(--orange);font-weight:700;font-size:18px;line-height:1}
+  .prob details[open] summary::after{content:"–"}
+  .prob details[open]{border-color:var(--black)}
+  .prob .body{padding:0 14px 12px;font-size:15px}
+  .prob .body p{margin:4px 0}
+  .prob .lbl{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+
+  .two{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+  .box{border:1px solid var(--line);border-radius:10px;padding:12px 14px;background:#fff}
+  .box h4{margin:0 0 6px;font-size:15px}
+  .box ul{margin:0;padding-left:18px;font-size:15px}
+
+  /* Checklist por número */
+  .tablewrap{overflow-x:auto;margin-top:12px;border:1px solid var(--black);border-radius:10px;background:#fff}
+  table{border-collapse:collapse;width:100%;min-width:720px;font-size:14px}
+  th,td{border-bottom:1px solid var(--gray);padding:8px 10px;text-align:left;vertical-align:middle}
+  th{background:var(--soft-yellow);font-weight:700;font-size:13px}
+  td input[type=text]{width:100%;font:inherit;font-size:14px;padding:6px 8px;border:1px solid var(--line);border-radius:6px}
+  td input[type=checkbox]{accent-color:var(--orange);width:18px;height:18px}
+  td.c{text-align:center}
+
+  .actions{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:16px}
+  .btn{font:inherit;font-weight:600;border:1px solid var(--black);background:var(--black);color:#fff;padding:10px 18px;border-radius:999px;cursor:pointer;text-decoration:none;display:inline-block;font-size:15px}
+  .btn:hover{background:var(--orange);border-color:var(--orange);color:#000}
+  .btn.ghost{background:#fff;color:#000}
+  .btn.ghost:hover{background:var(--soft-orange)}
+
+  .top-link{display:inline-block;margin-top:14px;font-size:13px;color:var(--muted);text-decoration:none}
+  .top-link:hover{color:var(--black)}
+  .refs{font-size:14px}
+  .refs li{margin:6px 0}
+  footer{margin-top:40px;font-size:12px;color:var(--muted);text-align:center}
+
+  @media (max-width:520px){
+    .card{padding:16px}
+    ol.steps>li{padding-left:44px}
+    .ui{white-space:normal}
+  }
+  @media print{
+    body{background:#fff}
+    .brandbar,.route,.actions,.top-link,nav.card{display:none}
+    .card{border-color:#999;break-inside:avoid-page}
+    .prob details{border-color:#999}
+    .prob details:not([open]) .body{display:block}
+    .tablewrap{overflow:visible}
+    table{min-width:0}
+  }
+</style>
+</head>
+<body>
+<div class="brandbar"></div>
+<main class="wrap" id="inicio">
+
+  <header class="top">
+    <div class="logo"><i></i>Black &amp; Orange</div>
+    <div class="client">Ferremayoreo Elizondo · WhatsApp en HubSpot</div>
+  </header>
+
+  <span class="tag">Manual · Coexistencia</span>
+  <h1>Conectar los WhatsApp de los vendedores a HubSpot</h1>
+  <p class="lead">Una guía paso a paso para que el número de cada vendedor siga funcionando en su celular de siempre y, al mismo tiempo, sus conversaciones aparezcan en HubSpot.</p>
+
+  <div class="stack">
+
+    <div class="card">
+      <h2 style="font-size:20px">La ruta en 6 pasos</h2>
+      <div class="route">
+        <a href="#permisos"><span class="n">1</span><span class="t">Dar los permisos</span></a>
+        <a href="#bandeja"><span class="n">2</span><span class="t">Crear la bandeja</span></a>
+        <a href="#conectar"><span class="n">3</span><span class="t">Conectar el número</span></a>
+        <a href="#asignar"><span class="n">4</span><span class="t">Asignar al vendedor</span></a>
+        <a href="#probar"><span class="n">5</span><span class="t">Probar</span></a>
+        <a href="#reglas"><span class="n">6</span><span class="t">Compartir las reglas</span></a>
+      </div>
+      <div class="call note hero-note">
+        <b class="k">Importante</b>
+        <p>Este manual es para los <b>números de los vendedores</b>. El número central (811 600 1459) ya está conectado de otra forma (API de Meta) y no se toca con estos pasos.</p>
+      </div>
+    </div>
+
+    <nav class="card" aria-label="Contenido">
+      <h2 style="font-size:20px;margin-bottom:10px">Contenido</h2>
+      <ol class="toc">
+        <li><a href="#antes">Antes de empezar</a></li>
+        <li><a href="#quien">Quién participa</a></li>
+        <li><a href="#permisos">Dar los permisos</a></li>
+        <li><a href="#bandeja">Crear la bandeja del vendedor</a></li>
+        <li><a href="#conectar">Conectar el número</a></li>
+        <li><a href="#asignar">Asignar las conversaciones</a></li>
+        <li><a href="#probar">Probar que funciona</a></li>
+        <li><a href="#reglas">Reglas de uso para el vendedor</a></li>
+        <li><a href="#problemas">Problemas comunes</a></li>
+        <li><a href="#desconectar">Cómo desconectar un número</a></li>
+        <li><a href="#checklist">Checklist por número</a></li>
+      </ol>
+    </nav>
+
+    <!-- 1 -->
+    <section class="card" id="antes">
+      <div class="sec-head"><span class="num">01</span><h2>Antes de empezar</h2></div>
+      <p class="intro">Si estos puntos están listos, cada número se conecta en pocos minutos y el historial termina de llegar solo, en segundo plano. Puedes ir palomeando aquí mismo.</p>
+      <div class="checks" id="prechecks">
+        <label class="check"><input type="checkbox"><span><b>Plan de HubSpot</b> Marketing Hub Professional o superior<small>Ferremayoreo ya lo cumple.</small></span></label>
+        <label class="check"><input type="checkbox"><span>El número usa la <b>app WhatsApp Business</b> (no WhatsApp normal)<small>El ícono de la app tiene una "B".</small></span></label>
+        <label class="check"><input type="checkbox"><span>La app está <b>actualizada</b><small>En la tienda de apps no aparece "Actualizar".</small></span></label>
+        <label class="check"><input type="checkbox"><span>El número <b>no está conectado a otra plataforma</b> de mensajería<small>Si lo estaba, se desconecta primero y se esperan 10 a 15 minutos.</small></span></label>
+        <label class="check"><input type="checkbox"><span>Hay una persona con <b>Súper administrador en HubSpot</b><small>Ver <a href="#permisos">Dar los permisos</a>.</small></span></label>
+        <label class="check"><input type="checkbox"><span>Esa persona (u otra a su lado) tiene <b>control total del portafolio de Meta</b> "Ferre Mayoreo"<small>Ver <a href="#permisos">Dar los permisos</a>.</small></span></label>
+        <label class="check"><input type="checkbox"><span>El <b>celular del vendedor está a la mano</b>, con internet<small>Se escanea un código QR con él.</small></span></label>
+        <label class="check"><input type="checkbox"><span>La <b>bandeja del vendedor ya está creada</b><small>Ver <a href="#bandeja">Crear la bandeja</a>.</small></span></label>
+        <label class="check"><input type="checkbox"><span>Ya se revisó si hay <b>chats que no deben subir</b> a HubSpot<small>Se borran del celular antes de conectar.</small></span></label>
+      </div>
+      <div class="progress" id="preprogress" aria-live="polite"></div>
+      <div class="call tip">
+        <b class="k">Tip</b>
+        <p>Conviene hacer la conexión desde una computadora, con la sesión de HubSpot abierta y el celular del vendedor al lado.</p>
+      </div>
+      <a class="top-link" href="#inicio">↑ Volver arriba</a>
+    </section>
+
+    <!-- 2 -->
+    <section class="card" id="quien">
+      <div class="sec-head"><span class="num">02</span><h2>Quién participa</h2></div>
+      <div class="tiles">
+        <div class="tile">
+          <h4>Súper administrador de HubSpot</h4>
+          <p>Crea la bandeja, hace la conexión y configura la asignación.</p>
+          <span class="pill yes">Acceso a Meta: sí, o alguien a su lado</span>
+        </div>
+        <div class="tile">
+          <h4>Administrador de Meta</h4>
+          <p>Inicia sesión en la ventana de Meta durante la conexión.</p>
+          <span class="pill yes">Acceso a Meta: sí</span>
+        </div>
+        <div class="tile">
+          <h4>Vendedor</h4>
+          <p>Presta su celular para escanear el QR y confirmar. Le basta su WhatsApp Business y su usuario de HubSpot.</p>
+          <span class="pill no">Acceso a Meta: no</span>
+        </div>
+      </div>
+      <p style="margin-top:14px">En Ferremayoreo, normalmente esto lo coordinan Joaquín y Adrián (Sistemas).</p>
+      <a class="top-link" href="#inicio">↑ Volver arriba</a>
+    </section>
+
+    <!-- 3 -->
+    <section class="card" id="permisos">
+      <div class="sec-head"><span class="num">03</span><h2>Dar los permisos</h2></div>
+      <p class="intro">Solo hace falta si la persona que va a conectar todavía no tiene alguno de los dos permisos.</p>
+
+      <h3>Control total en el portafolio de Meta</h3>
+      <ol class="steps">
+        <li>Para empezar, entras a <a href="https://business.facebook.com" target="_blank" rel="noopener">business.facebook.com</a> con una cuenta que ya tenga control total del portafolio <b>Ferre Mayoreo</b>.</li>
+        <li>Abres <span class="ui">Configuración</span> (el engrane) y, en el menú de la izquierda, das clic en <span class="ui">Personas</span>.</li>
+        <li>Das clic en <span class="ui">Invitar personas</span>, arriba a la derecha.</li>
+        <li>Escribes el correo de la persona. Debe ser el mismo correo de su cuenta de Facebook.</li>
+        <li>En los permisos del portafolio eliges <span class="ui">Control total</span> y das clic en <span class="ui">Siguiente</span> hasta <span class="ui">Invitar</span>.</li>
+        <li>La persona recibe un correo y <b>acepta la invitación</b>. Hasta que la acepte, no tiene acceso.</li>
+      </ol>
+      <div class="call imp">
+        <b class="k">Importante</b>
+        <p>Si no ves la opción <b>Personas</b> en el menú, tu cuenta no tiene control total del portafolio. En ese caso, la invitación la hace alguien que sí lo tenga.</p>
+      </div>
+
+      <h3>Súper administrador en HubSpot</h3>
+      <ol class="steps">
+        <li>En HubSpot das clic en el <span class="ui">engrane de Configuración</span>, arriba a la derecha.</li>
+        <li>En el menú de la izquierda entras a <span class="ui">Usuarios y equipos</span>.</li>
+        <li>Das clic en el nombre del usuario y abres la pestaña <span class="ui">Permisos</span>.</li>
+        <li>Activas la opción de <span class="ui">Súper administrador</span> y guardas.</li>
+      </ol>
+      <div class="call note">
+        <b class="k">Nota</b>
+        <p>Súper administrador es un <b>permiso</b>, no una licencia: no cambia el tipo de asiento del usuario. Si se prefiere, se puede dar solo para el día de la conexión y quitarlo después.</p>
+      </div>
+      <a class="top-link" href="#inicio">↑ Volver arriba</a>
+    </section>
+
+    <!-- 4 -->
+    <section class="card" id="bandeja">
+      <div class="sec-head"><span class="num">04</span><h2>Crear la bandeja del vendedor</h2></div>
+      <p class="intro">Cada vendedor tiene <b>su propia bandeja</b>, para que vea solo sus conversaciones y sus chats queden privados. Se crea <b>antes</b> de conectar el número; si no, al conectar solo aparece la bandeja general, donde no conviene dejarlo porque se mezcla con todo lo demás.</p>
+      <ol class="steps">
+        <li>En HubSpot das clic en el <span class="ui">engrane de Configuración</span>.</li>
+        <li>En el menú de la izquierda entras a <span class="ui">Bandeja de entrada</span> (puede aparecer dentro de <i>Bandeja de entrada y centro de ayuda</i>).</li>
+        <li>Das clic en <span class="ui">Acciones</span> → <span class="ui">Crear bandeja de entrada</span>.</li>
+        <li>Le pones de nombre el <b>nombre y apellido del vendedor</b>, para encontrarla fácil.</li>
+        <li>En <b>quién tiene acceso</b> eliges <b>usuarios específicos</b>: el vendedor y quien lo supervisa. Conviene <b>no</b> dar acceso a todo el equipo de ventas.</li>
+        <li>Cuando te pida conectar un canal, eliges <span class="ui">Conectar un canal más tarde</span>.</li>
+      </ol>
+      <div class="call note">
+        <b class="k">Nota</b>
+        <p>Los Súper administradores ven todas las bandejas aunque no estén en la lista de acceso, pero <b>solo pueden escribir</b> en una bandeja si son miembros de ella.</p>
+      </div>
+      <a class="top-link" href="#inicio">↑ Volver arriba</a>
+    </section>
+
+    <!-- 5 -->
+    <section class="card" id="conectar">
+      <div class="sec-head"><span class="num">05</span><h2>Conectar el número</h2></div>
+      <div class="call warn">
+        <b class="k">Cuidado con el camino</b>
+        <p>Durante la conexión, Meta puede ofrecer dos caminos. El correcto es <b>conectar la app de WhatsApp Business que ya existe</b> (coexistencia). Si en algún momento te pide <b>registrar el número con un código por SMS o llamada</b>, conviene detenerse ahí: esa es otra ruta (API) que saca el número de la app del celular.</p>
+      </div>
+      <ol class="steps">
+        <li>En HubSpot das clic en el <span class="ui">engrane de Configuración</span> y, al final del menú de la izquierda, entras a <span class="ui">WhatsApp</span>.</li>
+        <li>Das clic en <span class="ui">Conectar número de WhatsApp</span> (arriba a la derecha) y luego en <span class="ui">Continuar con WhatsApp</span>. Se abre una <b>ventana emergente de Meta</b>; si el navegador la bloquea, la permites.</li>
+        <li>En esa ventana inicias sesión con la <b>cuenta de Facebook que tiene control total</b> del portafolio y das clic en <span class="ui">Continuar</span>.</li>
+        <li>En <span class="ui">Añade tu número de teléfono de WhatsApp</span> eliges la lada de México (<b>+52</b>), escribes el número del vendedor y das clic en <span class="ui">Siguiente</span>.</li>
+        <li>Meta reconoce que el número ya tiene WhatsApp Business. Eliges la opción de <b>conectar la app existente</b> y, en <span class="ui">Verifica los datos de tu cuenta</span>, revisas que sean correctos y das clic en <span class="ui">Siguiente</span>.</li>
+        <li>En <span class="ui">Cartera empresarial</span> (el portafolio) eliges <b>Ferre Mayoreo</b> y das clic en <span class="ui">Siguiente</span>.</li>
+        <li>Aparece un <b>código QR</b>. En el celular del vendedor abres <b>WhatsApp Business</b> y lo escaneas. Si la app no lo abre sola, lo encuentras en <span class="path">Ajustes → Cuenta → Plataforma para empresas</span>.</li>
+        <li>En el celular aparece la pregunta de <b>compartir el historial</b> de chats. Recomendamos aceptarlo (ver el aviso de abajo). Das clic en <span class="ui">Confirmar</span>; puede tardar unos 45 segundos.</li>
+        <li>En la computadora revisas el <b>nombre de la cuenta</b> (solo se cambia desde la app) y eliges la <b>zona horaria</b> de México que corresponda.</li>
+        <li>Escribes el <b>código de verificación</b> que llega (al celular o al correo, según el caso).</li>
+        <li>Das clic en <span class="ui">Finalizar</span> y después en <span class="ui">Conectar a la bandeja de entrada</span>.</li>
+        <li>En el panel de la derecha eliges <span class="ui">Elegir una bandeja existente</span>, seleccionas la <b>bandeja del vendedor</b> y das clic en <span class="ui">Guardar</span>.</li>
+      </ol>
+      <div class="call imp">
+        <b class="k">Traer o no el historial no se puede cambiar después</b>
+        <p>Si no se trae, la única forma de traerlo es desconectar y repetir todo. Lo que llega:</p>
+        <ul class="dots">
+          <li>Hasta <b>6 meses</b> de conversaciones individuales, <b>solo en texto</b>.</li>
+          <li>Las fotos, audios y videos antiguos aparecen como un aviso, no como archivo.</li>
+          <li>Los <b>grupos no se comparten</b>.</li>
+        </ul>
+      </div>
+      <p>Las pantallas pueden variar un poco de orden, porque Meta las actualiza seguido. Lo importante es reconocer cada paso:</p>
+      <div class="flow">
+        <span>Número</span><i>→</i><span>App existente</span><i>→</i><span>Portafolio</span><i>→</i><span>QR</span><i>→</i><span>Historial</span><i>→</i><span>Zona horaria</span><i>→</i><span>Código</span><i>→</i><span>Bandeja</span>
+      </div>
+      <a class="top-link" href="#inicio">↑ Volver arriba</a>
+    </section>
+
+    <!-- 6 -->
+    <section class="card" id="asignar">
+      <div class="sec-head"><span class="num">06</span><h2>Asignar las conversaciones al vendedor</h2></div>
+      <p class="intro">Este paso es <b>el que más se olvida</b>. El historial llega sin dueño y, si no se asigna, HubSpot manda un aviso de "conversación sin asignar" <b>por cada chat</b> a todo el equipo.</p>
+      <ol class="steps">
+        <li>Entras a la <b>bandeja del vendedor</b>.</li>
+        <li>Abres <span class="ui">Configuración de canales</span> → <span class="ui">WhatsApp</span> → el número recién conectado.</li>
+        <li>En <span class="ui">Asignación</span> eliges <b>usuarios o equipos específicos</b> y seleccionas al <b>vendedor</b>.</li>
+        <li><b>Desactivas</b> la opción <span class="ui">Asignar solo a usuarios activos</span>, así ninguna conversación se queda sin dueño cuando el vendedor no está conectado.</li>
+        <li>Si aparece la opción de <b>carga equilibrada</b>, la dejas desactivada: es un solo vendedor.</li>
+        <li>Das clic en <span class="ui">Guardar</span>.</li>
+      </ol>
+      <div class="call note">
+        <b class="k">Nota</b>
+        <p>Solo se puede asignar a alguien que <b>tenga acceso a la bandeja</b>. Si el vendedor no aparece en la lista, revisas la pestaña <b>Acceso</b> de la bandeja.</p>
+      </div>
+      <a class="top-link" href="#inicio">↑ Volver arriba</a>
+    </section>
+
+    <!-- 7 -->
+    <section class="card" id="probar">
+      <div class="sec-head"><span class="num">07</span><h2>Probar que funciona</h2></div>
+      <ol class="steps">
+        <li>Desde otro celular, mandas un mensaje al número del vendedor.</li>
+        <li>Revisas que llegue <b>al celular del vendedor y a su bandeja en HubSpot</b>.</li>
+        <li>El vendedor responde <b>desde su celular</b> y revisas que la respuesta también aparezca en HubSpot.</li>
+        <li>Abres la conversación en HubSpot y revisas que quedó <b>asignada al vendedor</b> y ligada al contacto correcto.</li>
+      </ol>
+      <div class="call tip">
+        <b class="k">Listo</b>
+        <p>Si todo aparece en los dos lados, el número quedó conectado. ✅</p>
+      </div>
+      <a class="top-link" href="#inicio">↑ Volver arriba</a>
+    </section>
+
+    <!-- 8 -->
+    <section class="card" id="reglas">
+      <div class="sec-head"><span class="num">08</span><h2>Reglas de uso para el vendedor</h2></div>
+      <p class="intro">Para compartir con cada vendedor el día que se conecta su número.</p>
+
+      <h3>Lo que no cambia</h3>
+      <ul class="dots">
+        <li>Sigue usando <b>su celular (o WhatsApp Web) como siempre</b>. No hay app nueva que aprender.</li>
+        <li>Sus clientes <b>no notan nada</b>: mismo número, misma conversación.</li>
+        <li>Aunque borre un chat en su celular, la conversación <b>queda guardada en HubSpot</b>.</li>
+      </ul>
+
+      <h3>Lo que sí hay que cuidar</h3>
+      <div class="tiles">
+        <div class="tile"><h4>Abrir la app cada 14 días</h4><p>Si el celular pasa dos semanas sin abrir WhatsApp Business, Meta corta la conexión y hay que volver a conectar el número.</p></div>
+        <div class="tile"><h4>Iniciar desde el celular</h4><p>Escribir desde el celular no consume plantillas ni créditos. Si se inicia desde HubSpot con la ventana de 24 horas cerrada, se gasta una plantilla (con costo).</p></div>
+        <div class="tile"><h4>Ventana de 24 horas</h4><p>Cuando el cliente escribe, hay 24 horas para responder libremente. Pasado ese tiempo, desde HubSpot solo se puede escribir con una plantilla aprobada por Meta.</p></div>
+        <div class="tile"><h4>Acordar quién responde</h4><p>Si el vendedor contesta desde el celular y otra persona desde HubSpot, el cliente recibe dos respuestas. Se resuelve con un acuerdo interno.</p></div>
+        <div class="tile"><h4>Notas de voz desde el celular</h4><p>Desde HubSpot se ven y se escuchan, pero se envían desde el celular.</p></div>
+        <div class="tile"><h4>Teléfonos con +52</h4><p>Así HubSpot liga solo la conversación con el contacto correcto.</p></div>
+        <div class="tile"><h4>WhatsApp Web</h4><p>Si el vendedor lo usa, puede que tenga que volver a vincularlo después de la conexión.</p></div>
+      </div>
+
+      <h3>Lo que se queda fuera de HubSpot</h3>
+      <div class="two">
+        <div class="box">
+          <h4>Solo vive en el celular</h4>
+          <ul><li>Grupos</li><li>Estados</li><li>Listas de difusión</li><li>Catálogo</li><li>Llamadas de voz o video</li></ul>
+        </div>
+        <div class="box">
+          <h4>Se apaga en chats individuales (regla de Meta)</h4>
+          <ul><li>Mensajes temporales</li><li>Mensajes de "ver una vez"</li><li>Ubicación en tiempo real</li><li>Editar o eliminar un mensaje enviado</li></ul>
+        </div>
+      </div>
+      <a class="top-link" href="#inicio">↑ Volver arriba</a>
+    </section>
+
+    <!-- 9 -->
+    <section class="card" id="problemas">
+      <div class="sec-head"><span class="num">09</span><h2>Problemas comunes</h2></div>
+      <p class="intro">Das clic en cada caso para ver la causa más probable y cómo se resuelve.</p>
+      <div class="prob">
+        <details><summary>No aparece el portafolio "Ferre Mayoreo" en la lista</summary><div class="body"><p><span class="lbl">Causa</span><br>La cuenta de Facebook con la que se inició sesión no tiene control total del portafolio.</p><p><span class="lbl">Solución</span><br>Iniciar sesión con otra cuenta o pedir el permiso (<a href="#permisos">Dar los permisos</a>).</p></div></details>
+        <details><summary>Dice que el número ya está conectado a otra plataforma</summary><div class="body"><p><span class="lbl">Causa</span><br>El número sigue ligado a otra herramienta.</p><p><span class="lbl">Solución</span><br>Desconectarlo de ahí, esperar 10 a 15 minutos y volver a intentar.</p></div></details>
+        <details><summary>El celular no escanea el QR o no muestra la opción</summary><div class="body"><p><span class="lbl">Causa</span><br>App desactualizada, o es WhatsApp normal y no Business.</p><p><span class="lbl">Solución</span><br>Actualizar WhatsApp Business y buscar en Ajustes → Cuenta → Plataforma para empresas.</p></div></details>
+        <details><summary>Pide registrar el número por SMS o llamada</summary><div class="body"><p><span class="lbl">Causa</span><br>Se eligió la ruta de API en lugar de la app existente.</p><p><span class="lbl">Solución</span><br>Cerrar la ventana sin terminar y repetir desde el paso 1, eligiendo conectar la app existente.</p></div></details>
+        <details><summary>Llegan muchos avisos de "conversación sin asignar"</summary><div class="body"><p><span class="lbl">Causa</span><br>Faltó configurar la asignación.</p><p><span class="lbl">Solución</span><br>Hacer los pasos de <a href="#asignar">Asignar las conversaciones</a>.</p></div></details>
+        <details><summary>El vendedor no ve su bandeja o no puede responder</summary><div class="body"><p><span class="lbl">Causa</span><br>No está en la lista de acceso de la bandeja.</p><p><span class="lbl">Solución</span><br>Bandeja → pestaña Acceso → agregarlo.</p></div></details>
+        <details><summary>La conversación no se liga a un contacto que sí existe</summary><div class="body"><p><span class="lbl">Causa</span><br>El teléfono del contacto no tiene el formato +52.</p><p><span class="lbl">Solución</span><br>Corregir el teléfono en el contacto o asociar la conversación a mano desde la bandeja.</p></div></details>
+        <details><summary>La conexión se cayó sola</summary><div class="body"><p><span class="lbl">Causa</span><br>La app pasó más de 14 días sin abrirse.</p><p><span class="lbl">Solución</span><br>Abrir la app y volver a conectar el número (<a href="#conectar">Conectar el número</a>).</p></div></details>
+        <details><summary>No se puede cambiar la foto o la descripción desde HubSpot o Meta</summary><div class="body"><p><span class="lbl">Causa</span><br>En coexistencia el perfil pertenece a la app.</p><p><span class="lbl">Solución</span><br>Cambiarlo desde WhatsApp Business en el celular.</p></div></details>
+      </div>
+      <p style="margin-top:14px">Si algo no se resuelve con estos casos, lo revisamos juntos con el equipo de Black &amp; Orange.</p>
+      <a class="top-link" href="#inicio">↑ Volver arriba</a>
+    </section>
+
+    <!-- 10 -->
+    <section class="card" id="desconectar">
+      <div class="sec-head"><span class="num">10</span><h2>Cómo desconectar un número</h2></div>
+      <p class="intro">Por ejemplo, si un vendedor deja la empresa o el celular cambia de uso. <b>Lo que ya llegó a HubSpot se queda guardado</b>; solo dejan de sincronizar las conversaciones nuevas.</p>
+      <div class="two">
+        <div class="box">
+          <h4>Desde el celular (la forma más directa)</h4>
+          <ol style="margin:0;padding-left:18px;font-size:15px">
+            <li>Abres WhatsApp Business → Ajustes → Cuenta → Plataforma para empresas.</li>
+            <li>Eliges HubSpot y lo desconectas.</li>
+          </ol>
+        </div>
+        <div class="box">
+          <h4>Desde HubSpot</h4>
+          <ol style="margin:0;padding-left:18px;font-size:15px">
+            <li>Engrane de Configuración → Bandeja de entrada.</li>
+            <li>Si hay varias bandejas, eliges la del vendedor en el menú de vista.</li>
+            <li>Pasas el cursor sobre el canal de WhatsApp, das clic en Eliminar y confirmas.</li>
+          </ol>
+        </div>
+      </div>
+      <div class="call tip">
+        <b class="k">Tip</b>
+        <p>Si el número se va a conectar de nuevo (por ejemplo, para un vendedor nuevo con ese mismo celular), conviene esperar 10 a 15 minutos después de desconectarlo.</p>
+      </div>
+      <a class="top-link" href="#inicio">↑ Volver arriba</a>
+    </section>
+
+    <!-- 11 -->
+    <section class="card" id="checklist">
+      <div class="sec-head"><span class="num">11</span><h2>Checklist por número</h2></div>
+      <p class="intro">Para palomear cada número conectado. Puedes llenarla aquí y descargarla, o imprimirla.</p>
+      <div class="tablewrap">
+        <table id="cl">
+          <thead>
+            <tr>
+              <th style="min-width:160px">Vendedor</th>
+              <th>Bandeja creada</th>
+              <th>App actualizada</th>
+              <th>Conectado</th>
+              <th>Historial</th>
+              <th>Asignación</th>
+              <th>Prueba</th>
+              <th style="min-width:110px">Fecha</th>
+              <th style="min-width:130px">Quién conectó</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="actions">
+        <button class="btn" type="button" id="dl">Descargar como CSV</button>
+        <button class="btn ghost" type="button" onclick="window.print()">Imprimir</button>
+      </div>
+      <a class="top-link" href="#inicio">↑ Volver arriba</a>
+    </section>
+
+    <section class="card">
+      <h2 style="font-size:20px;margin-bottom:8px">Para leer más</h2>
+      <ul class="refs">
+        <li><a href="https://knowledge.hubspot.com/es/inbox/connect-a-whatsapp-number-to-hubspot-using-coexistence" target="_blank" rel="noopener">Conectar un número de WhatsApp a HubSpot con coexistencia</a> — artículo oficial de HubSpot (la versión en inglés es la más actualizada).</li>
+        <li><a href="https://knowledge.hubspot.com/inbox/connect-whatsapp-to-the-conversations-inbox" target="_blank" rel="noopener">Conectar WhatsApp a la bandeja de entrada de conversaciones</a> — artículo oficial de HubSpot.</li>
+      </ul>
+      <p style="font-size:13px;color:var(--muted);margin:10px 0 0">Las pantallas de HubSpot y de Meta cambian con frecuencia. Si algún nombre de botón no coincide, la idea de cada paso se mantiene igual.</p>
+    </section>
+
+  </div>
+
+  <footer>Manual de coexistencia WhatsApp en HubSpot · Ferremayoreo Elizondo · Black &amp; Orange · v1.0 · octubre 2026</footer>
+</main>
+
+<script>
+(function(){
+  // Avance de la lista "Antes de empezar"
+  var boxes = document.querySelectorAll('#prechecks input');
+  var out = document.getElementById('preprogress');
+  function upd(){
+    var n = 0; boxes.forEach(function(b){ if(b.checked) n++; });
+    out.textContent = n === boxes.length ? '✅ Todo listo para conectar.' : n + ' de ' + boxes.length + ' listos';
+  }
+  boxes.forEach(function(b){ b.addEventListener('change', upd); });
+  upd();
+
+  // Checklist por número (9 filas)
+  var cols = ['bandeja','app','conectado','historial','asignacion','prueba'];
+  var tb = document.querySelector('#cl tbody');
+  for (var i = 0; i < 9; i++){
+    var tr = document.createElement('tr');
+    var html = '<td><input type="text" aria-label="Vendedor" placeholder="Nombre"></td>';
+    cols.forEach(function(c){ html += '<td class="c"><input type="checkbox" aria-label="' + c + '"></td>'; });
+    html += '<td><input type="text" aria-label="Fecha" placeholder="dd/mm"></td>';
+    html += '<td><input type="text" aria-label="Quién conectó"></td>';
+    tr.innerHTML = html;
+    tb.appendChild(tr);
+  }
+
+  document.getElementById('dl').addEventListener('click', function(){
+    var head = ['Vendedor','Bandeja creada','App actualizada','Conectado','Historial','Asignación','Prueba','Fecha','Quién conectó'];
+    var rows = [head];
+    tb.querySelectorAll('tr').forEach(function(tr){
+      var r = [];
+      tr.querySelectorAll('input').forEach(function(inp){
+        r.push(inp.type === 'checkbox' ? (inp.checked ? 'Sí' : '') : inp.value);
+      });
+      if (r.some(function(v){ return v !== ''; })) rows.push(r);
+    });
+    var csv = rows.map(function(r){
+      return r.map(function(v){ return '"' + String(v).replace(/"/g,'""') + '"'; }).join(',');
+    }).join('\r\n');
+    var blob = new Blob(['﻿' + csv], {type:'text/csv;charset=utf-8'});
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'checklist-whatsapp-coexistencia.csv';
+    document.body.appendChild(a); a.click(); a.remove();
+  });
+})();
+</script>
+</body>
+</html>
